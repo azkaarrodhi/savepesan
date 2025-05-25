@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>Error</title>
+   <link rel="stylesheet" href="{{ url_for('static', filename='assets/error.css') }}">
+</head>
+<body translate="no">
+  <main role="main" class="error-wrapper" aria-labelledby="error-code" aria-describedby="error-message">
+    <img src="{{ url_for('static', filename='assets/error.png') }}" width="80%" height="80%">
+    <div class="error-code" id="error-code">{{ code }}</div>
+    <div class="error-message" id="error-message">  
+      {% if code == 404 %}
+        Halaman tidak ditemukan.
+      {% elif code == 405 %}
+        Metode tidak diperbolehkan.
+      {% elif code == 302 %}
+        Halaman gagal dimuat.
+      {% elif code == 400 %}
+        Permintaan tidak valid.
+      {% elif code == 401 %}
+        Anda tidak memiliki izin.
+      {% elif code == 403 %}
+        Akses ditolak.
+      {% elif code == 408 %}
+        Permintaan terlalu lama.
+      {% elif code == 429 %}
+        Terlalu banyak permintaan.
+      {% elif code == 500 %}
+        Kesalahan server internal.
+      {% elif code == 503 %}
+        Layanan tidak tersedia.
+      {% elif code == 413 %}
+        Ukuran File Maximal 80 MB.
+      {% else %}
+        Terjadi kesalahan yang tidak diketahui.
+      {% endif %}</div>
+    <div class="error-description" id="error-description">An unexpected error has occurred. Please try again later.</div>
+    <button class="go-back" onclick="goBack()">Go Back</button>
+  </main>
+<script>
+  // On page load, optionally parse URL params for code, message, description
+  (function() {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    const message = params.get('message');
+    const description = params.get('description');
+
+    if (code) {
+      document.getElementById('error-code').textContent = code;
+    }
+    if (message) {
+      document.getElementById('error-message').textContent = message;
+    }
+    if (description) {
+      document.getElementById('error-description').textContent = description;
+    }
+  })();
+
+  function goBack() {
+    if (document.referrer) {
+      window.history.back();
+    } else {
+      window.location.href = '/';
+    }
+  }
+</script>
+</body>
+</html>
+

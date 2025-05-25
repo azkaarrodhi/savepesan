@@ -1,0 +1,187 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta name="theme-color" content="#222">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=National+Park:wght@200..800&family=Winky+Sans:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title></title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/index.css') }}">
+
+</head>
+<body>
+
+  <div class="content">
+    <div class="container">
+      <h1>Ruang digital sederhana</h1>
+      <p>Ini adalah website sederhana yang menyajikan hal random
+
+</p>
+      
+
+      
+        <div class="formcontainer">
+    <h2><i class="fas fa-paper-plane"></i> Save Pesan</h2>
+          
+          
+          
+          
+          
+          
+          
+    <form action="/" method="POST" enctype="multipart/form-data">
+  {{form.csrf_token()}}
+
+  <div class="input-group">
+  
+    <input type="text" name="nama" id="nama" placeholder="Nama Kamu....." maxlength="15"
+      autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" required
+      oninput="checkMax()" onclick="showWarningIfFull()" style="width: 100%; margin: 10px auto;"/>
+    
+      <p id="warning" class="hidden" style="color: red; font-weight: 600; font-family: 'arial', sans-serif; font-size: 13px; margin-left: 2px; margin-top: -5px;">Max 15 karakter</p>
+
+  </div>
+
+  <div class="input-group" style="margin-top: -10px;">
+    <label style="margin-left: 3px; font-size: 16px;">Sisipkan File (opsional)</label>
+    <input type="file" name="file" id="a"
+      style="outline: none; user-select: none; font-weight: bold; margin-top: 5px;" />
+  </div>
+
+  <div class="input-group">
+
+    <textarea name="pesan" id="b" placeholder="Tulis pesan....."
+      rows="6" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" required
+      style="outline: none; resize: none; font-family: 'arial, sans-serif;"></textarea>
+  </div>
+
+  <!-- Checkbox "show password" diganti jadi tidak muncul karena sudah diganti jadi textarea -->
+
+  <button type="submit" class="btnn" style="margin-top: 5px;" id="myButton">
+    <b>Kirim Pesan</b>
+  </button>
+
+  
+</form>
+          
+          
+          <button style="margin-top: 10px; color: #1c86ee;" onclick="pplo()" class="btnn" id="myButton">
+    <b>Daftar Pesan</b>
+            
+  </button>
+          
+          
+          <!-- <p style="text-align: center; user-select: none; font-family: 'Roboto Slab', serif; font-size: 13px; margin-top: 9px; margin-bottom: -9px; color: #f1f1f1;">  <a href="/terms" style="text-decoration: underline; color: #f1f1f1;">Syarat & Ketentuan Penggunaan</a></p>--> 
+
+  </div>
+      <!--<button onclick="openPrompt()" class="btn" id="myButton">Login</button>-->
+    </div>
+  </div>
+
+  <!-- Alert Modal -->
+  <div class="overlay" id="customOverlay">
+    <div class="alert-box" id="alertBox">
+      <h3>Enter the password you created</h3>
+      <div class="input">
+      <input type="password" id="passwordInput" placeholder="Password" />
+        </div>
+          <div class="scale-in" >
+        <span id="errorMsg" style="display:none;" class="alert-icon scale-in">Incorrect Password!</span>
+      </div>
+      <div class="alert-actions">
+        <button onclick="closePrompt()" id="myButton">Cancel</button>
+        <button onclick="checkPassword()" id="myButton">Next</button>
+      </div>
+  
+    </div>
+  </div>
+  
+  <script>
+  function pplo() {
+      window.location.href = "/dashboard";
+    }
+  </script>
+  
+<script>
+    const overlay = document.getElementById('customOverlay');
+    
+    const errorMsg = document.getElementById('errorMsg');
+    const button = document.getElementById('myButton');
+
+    function openPrompt() {
+      overlay.style.display = 'flex';
+      passwordInput.value = '';
+      errorMsg.style.display = 'none';
+      alertBox.classList.add("scale-in");
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closePrompt() {
+  const alertBox = overlay.querySelector('.alert-box');
+document.body.style.overflow = 'auto';
+  alertBox.classList.remove('scale-in');
+  alertBox.classList.add('scale-out');
+  setTimeout(() => {
+    overlay.style.display = 'none';
+    alertBox.classList.remove('scale-out');
+  }, 90);
+}
+
+  const buttons = document.querySelectorAll('button');
+
+buttons.forEach(button => {
+  button.addEventListener('touchstart', () => {
+    button.classList.add('touched');
+  });
+
+  button.addEventListener('touchend', () => {
+    button.classList.remove('touched');
+  });
+
+  button.addEventListener('mousedown', () => {
+    button.classList.add('touched');
+  });
+
+  button.addEventListener('mouseup', () => {
+    button.classList.remove('touched');
+  });
+
+  button.addEventListener('mouseleave', () => {
+    button.classList.remove('touched');
+  });
+});
+  
+    
+  
+  overlay.addEventListener('click', function () {
+ 
+    
+  });
+
+  </script>
+<script>
+  const input = document.getElementById("nama");
+  const warning = document.getElementById("warning");
+
+  input.addEventListener("input", () => {
+    if (input.value.length >= 15) {
+      input.value = input.value.slice(0, 15); // Potong jika lewat
+      warning.classList.remove("hidden");
+    } else {
+      warning.classList.add("hidden");
+    }
+  });
+
+  input.addEventListener("click", () => {
+    if (input.value.length >= 15) {
+      warning.classList.remove("hidden");
+    }
+  });
+</script>
+</body>
+</html>

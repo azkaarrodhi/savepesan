@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Pesan</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body class="min-h-screen bg-gray-900 text-gray-200 p-6">
+
+  <div class="max-w-3xl mx-auto bg-gray-800 p-8 rounded-3xl shadow-xl">
+    <h1 class="text-3xl font-semibold text-center text-indigo-500 mb-6">Edit Pesan</h1>
+
+    <form method="POST" action="{{ url_for('edit_data', id=entry.id) }}" enctype="multipart/form-data">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="mb-6">
+        <label for="pesan" class="block text-lg text-gray-300 mb-2">Pesan:</label>
+        <textarea id="pesan" name="pesan" rows="4" class="w-full p-4 rounded-lg border-2 border-gray-600 bg-gray-700 text-gray-100" required>{{ entry.pesan }}</textarea>
+      </div>
+<div class="mb-4">
+  <label for="pp" class="block text-sm font-semibold text-gray-300">Ganti Foto Profil (Opsional)</label>
+  <input type="file" id="pp" name="pp" accept="image/*" class="w-full p-2 bg-card text-gray-200 border border-gray-700 rounded-lg">
+</div>
+      
+
+      <div class="flex justify-between items-center">
+        <button type="submit" class="px-8 py-3 bg-indigo-600 text-white rounded-lg shadow-lg hover:bg-indigo-500 transition">
+          Simpan
+        </button>
+        <a href="{{ url_for('admin') }}" class="text-sm text-gray-400 hover:text-gray-300">Kembali</a>
+      </div>
+    </form>
+  </div>
+
+</body>
+</html>

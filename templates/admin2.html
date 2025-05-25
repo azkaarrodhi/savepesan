@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin</title>
+
+  <!-- Font & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Merienda:wght@300..900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            dark: "#1f2937",
+            card: "#374151",
+            accent: "#8b5cf6"
+          }
+        }
+      }
+    }
+  </script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body class="min-h-screen p-6 bg-dark text-gray-200">
+  <div class="max-w-4xl mx-auto">
+
+    <h1 class="text-4xl font-bold mb-6 text-accent" style="font-family: 'Caveat', cursive;">
+      Admin Panel - Data Upload
+    </h1>
+
+    <div class="grid gap-6">
+      {% if uploads %}
+        {% for item in uploads %}
+        <div class="bg-card p-6 rounded-2xl shadow-lg relative group transition-transform duration-200">
+
+          <!-- Nama & Foto -->
+          <div class="flex items-center gap-2 mb-1" style="font-family: 'Indie Flower', cursive; user-select: none; font-size: 25px;">
+            <img
+              src="{{ url_for('static', filename='uploads/' + item.pp) if item.pp else url_for('static', filename='assets/pp.jpeg') }}"
+              alt="Profile Picture"
+              class="rounded-full shadow"
+              style="pointer-events: none; user-select: none; width: 37px; height: 37px; margin-top: -3px;"
+            />
+            <span class="text-purple-500">{{ item.nama }}</span>
+            {% if item.admin %}
+              <img src="https://azkaarrodhi.vercel.app/cb.png" alt="centang" width="33" height="33" style="margin-left: -7px;" />
+            {% endif %}
+            {% if item.bahaya %}
+              <span title="Pesan berbahaya" class="ml-1 text-red-500">
+                <i class="fas fa-exclamation-circle" style="font-size: 17px;"></i>
+              </span>
+            {% endif %}
+          </div>
+
+          <!-- Pesan diganti menampilkan IP dan User Agent -->
+<p class="mt-2 text-gray-300" style="font-family: 'Libre Baskerville', serif; line-height: 1.4; word-break: break-word; overflow-wrap: break-word; white-space: normal; width: 100%; max-width: 100%;">
+  <strong>ALAMAT IP:</strong> {{ item.ip_address }}<br>
+  <strong>USER AGENT:</strong> {{ item.user_agent }}<br>
+  <strong>PERANGKAT:</strong> {{ item.device_model or 'N/A' }}<br>
+  <strong>OS:</strong> {{ item.os_info or 'N/A' }}<br>
+</p>
+
+          <!-- Link File -->
+          {% if item.file %}
+          <a
+            href="{{ url_for('static', filename='uploads/' + item.file) }}"
+            target="_blank"
+            class="inline-block mt-3 px-4 py-2 bg-accent text-white text-sm font-semibold rounded-lg shadow hover:bg-purple-500 transition"
+            oncontextmenu="return false;"
+            style="user-select: none; -webkit-tap-highlight-color: transparent;"
+            >Lihat File</a
+          >
+          {% endif %}
+
+          <!-- Waktu -->
+          <div class="mt-4 text-xs text-gray-400 text-right select-none" style="margin-bottom: -10px;">
+            {{ item.waktu }}
+          </div>
+        </div>
+        {% if not loop.last %}
+          <hr class="my-4 border-t border-gray-700" />
+        {% endif %}
+        {% endfor %}
+      {% else %}
+      <p class="text-center text-gray-400">Belum ada data.</p>
+      {% endif %}
+    </div>
+
+  </div>
+</body>
+</html>

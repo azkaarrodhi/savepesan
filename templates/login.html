@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/login.css') }}">
+</head>
+<body>
+  <div class="login-container" role="main" aria-labelledby="login-title">
+    <h2 id="login-title">Login Admin</h2>
+
+
+
+
+    {% if attempts >= 2 %}
+    <h2>Anda bukan Admin!</h2>
+    <button onclick="window.location.href='/';" style="width: 100%">Kembali ke halaman utama</button>
+    {% else %}
+      <form method="post" novalidate>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <input
+          type="text"
+          name="username"
+          id="username"
+          placeholder="Masukkan Username"
+          required
+          autocomplete="username"
+          aria-label="Username">
+        <input
+          type="password"
+          name="password"
+          id="password"
+          placeholder="Masukkan Password"
+          required
+          autocomplete="current-password"
+          aria-label="Password"
+          minlength="1"
+          maxlength="64">
+            {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="error2" role="alert">
+          {% for msg in messages %}
+            <p>{{ msg }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+        <button type="submit" aria-live="polite">Login</button>
+      </form>
+    {% endif %}
+  </div>
+</body>
+</html>
+

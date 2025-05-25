@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin</title>
+
+  <!-- Font & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Merienda:wght@300..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            dark: "#1f2937",      // latar belakang utama
+            card: "#374151",      // latar kartu
+            accent: "#8b5cf6"     // ungu untuk judul & elemen penting
+          }
+        }
+      }
+    }
+  </script>
+<style>
+
+    .form {
+        max-width: 430px;
+        margin-bottom: 50px;
+        background-color: #2a2a40;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .l{
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #cccccc;
+        font-size: 0.95rem;
+    }
+
+    input[type="text"],
+    textarea,
+    input[type="file"] {
+        width: 100%;
+        padding: 12px 14px;
+        margin-bottom: 20px;
+        background-color: #35354e;
+        border: 1px solid #55556b;
+        border-radius: 10px;
+        color: #f0f0f0;
+        font-size: 0.95rem;
+        transition: border 0.3s, box-shadow 0.3s;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus,
+    input[type="file"]:focus {
+        border-color: #7f5af0;
+        box-shadow: 0 0 0 2px rgba(127, 90, 240, 0.4);
+        outline: none;
+    }
+
+    textarea {
+        resize: none !important;
+        padding: 12px 14px;
+    }
+
+    .but {
+        width: 100%;
+        padding: 12px;
+        background: linear-gradient(135deg, #7f5af0, #5a34d1);
+        border: none;
+        border-radius: 10px;
+        color: white;
+        font-weight: bold;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    button[type="submit"]:hover {
+        background: linear-gradient(135deg, #6a44d1, #492fc0);
+    }
+</style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body class="min-h-screen p-6 bg-dark text-gray-200">
+
+<form class="form" action="{{ url_for('upload_data') }}" method="POST" enctype="multipart/form-data">
+   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <label class="l" for="nama">Nama</label>
+    <input type="text" id="nama" name="nama" required>
+
+    <label class="l" for="pesan">Pesan</label>
+    <textarea id="pesan" name="pesan" rows="5" required></textarea>
+
+    <label class="l" for="file">Upload File (Opsional)</label>
+    <input type="file" id="file" name="file">
+
+    <label class="l" for="pp">Foto Profil (Opsional)</label>
+    <input type="file" id="pp" name="pp" accept="image/*">
+
+    <button class="but" type="submit">Upload Data</button>
+</form>
+  <div class="max-w-4xl mx-auto">
+
+
+    <div class="grid gap-6">
+      {% for item in uploads %}
+      <div class="bg-card p-6 rounded-2xl shadow-lg relative group transition-transform duration-200">
+        <!-- Tombol Pin -->
+<form method="POST" action="{{ url_for('pin_data', id=item.id) }}" style="position: absolute; top: 12px; right: 100px;">
+  <button type="submit" class="text-blue-400 hover:text-blue-600">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <i class="fas fa-thumbtack {% if item.pinned %}rotate-45{% endif %}"></i>
+  </button>
+</form>
+<!-- Tombol Edit -->
+<form method="GET" action="{{ url_for('edit_data', id=item.id) }}" 
+      class="absolute top-3 right-10">
+  
+  <button type="submit" class="text-yellow-500 hover:text-yellow-500">
+    <i class="fas fa-pencil-alt"></i>
+  </button>
+</form>
+        <!-- Tombol Hapus -->
+        
+        <form method="POST" action="{{ url_for('hapus_data', id=item.id) }}" 
+              onsubmit="return confirm('Yakin ingin menghapus data ini?')" 
+              class="absolute top-3 right-3">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="text-red-500 hover:text-red-500">
+            <i class="fas fa-trash"></i>
+          </button>
+        </form>
+<!-- Tombol Bahaya -->
+<form method="POST" action="{{ url_for('toggle_bahaya', id=item.id) }}" 
+      style="position: absolute; top: 12px; right: 70px;">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <button type="submit" class="{% if item.bahaya %}text-red-500{% else %}text-gray-400{% endif %} hover:text-red-400">
+    <i class="fas fa-exclamation-circle"></i>
+  </button>
+</form>
+        <!-- Nama & Foto -->
+<div class="flex items-center gap-1" style="font-family: 'Indie Flower', cursive; user-select: none; font-size: 25px; margin-left: -5px;">
+    <img src="{{ url_for('static', filename='uploads/' + item.pp) if item.pp else url_for('static', filename='assets/pp.jpeg') }}" 
+     class="rounded-full shadow"
+     style="pointer-events: none; user-select: none; width: 37px; height: 37px; margin-top: -3px;">
+  
+  <span class="text-purple-500">{{ item.nama }}</span>
+  {% if item.admin %}
+    <img src="https://azkaarrodhi.vercel.app/cb.png" alt="centang" width="33" height="33" style="margin-left: -7px;">
+  {% endif %}
+  {% if item.bahaya %}
+    <span title="Pesan berbahaya" class="ml-1 text-red-500">
+      <i class="fas fa-exclamation-circle" style="font-size: 17px;"></i>
+    </span>
+  {% endif %}
+</div>
+
+        <!-- Pesan -->
+<p class="mt-2 text-gray-300" style="font-family: 'Libre Baskerville', serif; line-height: 1.4; word-break: break-word; overflow-wrap: break-word; white-space: normal; width: 100%; max-width: 100%;">
+  {{ item.pesan|replace('\n', '<br>')}}
+</p>
+
+        <!-- Link File -->
+        {% if item.file %}
+        <a href="{{ url_for('static', filename='uploads/' + item.file) }}" target="_blank"
+           class="inline-block mt-3 px-4 py-2 bg-accent text-white text-sm font-semibold rounded-lg shadow hover:bg-purple-500 transition" oncontextmenu="return false;" style="user-select: none; -webkit-tap-highlight-color: transparent;">
+          Lihat File
+        </a>
+        {% endif %}
+
+        <!-- Tanggal -->
+        <div class="mt-4 text-xs text-gray-400 text-right" style="margin-bottom: -10px; user-select: none;">
+          {{ item.waktu }}
+        </div>
+      </div>
+
+      <hr class="my-2 border-t border-gray-700">
+      {% else %}
+      <p class="text-center text-gray-400">Belum ada data.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+</body>
+</html>
